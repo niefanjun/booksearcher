@@ -1,0 +1,12 @@
+var server = require("./server");
+var router = require("./router");
+var requestHandlers = require("./requestHandlers");
+var handle = {};
+handle['/amazon'] = requestHandlers.amazon;
+handle['/dangdang'] = requestHandlers.dangdang;
+handle['/jd'] = requestHandlers.jd;
+handle['/register'] = requestHandlers.register;
+handle['/login'] = requestHandlers.login;
+handle['/logout'] = requestHandlers.logout;
+handle['/collect'] = requestHandlers.collect;
+server.start(router.route,handle);
