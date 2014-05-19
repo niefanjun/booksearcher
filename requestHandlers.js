@@ -55,7 +55,7 @@ function numtostring(num){
     }
     return string;
 }
-//将gb2312编码的中文转换为
+//将gb2312编码的中文转换为url编码
 function gb2312decode(buffer){
     var length = buffer.length;
     var string = '';
