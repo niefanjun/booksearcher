@@ -19,17 +19,10 @@ input{
 .main{
     position: relative;
     overflow: hidden;
-    -webkit-perspective: 3000px;
 }
 .page{
     position: absolute;
     background-color: #f0f0f0; 
-}
-.page3d{
-    -webkit-transform-origin: 50% 50% -300px;
-}
-.page3d.search_page{
-    -webkit-transform: translate3d(0,0,-400px) rotateY(100deg); 
 }
 .start_page{
     z-index: 1;
@@ -39,10 +32,10 @@ input{
     overflow-y:scroll;
     overflow-x:hidden;
 }
-/* .search_page::-webkit-scrollbar {
+.search_page::-webkit-scrollbar {
     width: 0; 
     height: 0; 
-} */
+} 
 .logo{
     position: absolute;
     border-radius: 5px;
@@ -76,7 +69,7 @@ input{
 .search_bar{
     background-color: #3399CC;
     height: 10%;
-    width: 100%;
+    width: 105%;
     position: fixed;
     top:0;
     box-shadow: 0px -5px 8px 8px #0d74a7;
@@ -92,7 +85,7 @@ input{
     position: fixed;
     top:10%;
     height: 6.1%;
-    width: 100%;
+    width: 105%;
     background-color: #4b9bc3;
     z-index: 0;
 }
@@ -124,14 +117,11 @@ input{
     opacity: 0.9;
 }
 .booklistbox{
-    -webkit-perspective: 3000px;
     position: relative;
     z-index: -1;
 }
 .bookceil{
     /* -webkit-transform: rotateY(90deg); */
-    -webkit-transform-origin: 0 0 0;
-    opacity: 0;
     position: relative;
     background-color: #ffffff;
     box-shadow: 0px -0px 12px -4px #0d74a7;
@@ -153,5 +143,11 @@ input{
     position: absolute;
     bottom: 0;
     padding: 3px;
-    background-color: #3399CC;
+    background-color: #61a0cd;
+}
+.bookceil .name{
+    color: gray;
+}
+.bookceil .info{
+    color: gray;
 }

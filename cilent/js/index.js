@@ -292,7 +292,7 @@ function addpage(data){
     //$('.bookceil').removeClass('displaynone')
     console.log('ok');
     //showceil
-    showceil('.bookceil.'+pagenum,0);
+
 }
 
 function loadmore(){
@@ -465,46 +465,8 @@ $(document).ready(function(){
         //使用了一个辅助用的空元素来完成动画
         $('.page').addClass('page3d');
         $('.search_page').removeClass('displaynone');
-        $('.for_3d_animate').animate({
-            textIndent: 400
-        }, {
-            step: function(now, fx) {
-                $('.start_page').css('-webkit-transform', 'translate3d(0,0,-' + now + 'px)');
-            },
-            complete: function(){
-                $(this).css('text-indent', '0');
-                $('.for_3d_animate').animate({
-                    textIndent: 100
-                },{
-                    step: function(now,fx){
-                        $('.start_page').css('-webkit-transform', 'translate3d(0,0,-400px) '+'rotateY(-'+now+'deg)');
-                        $('.search_page').css('-webkit-transform', 'translate3d(0,0,-400px) '+'rotateY('+(100-now)+'deg)');
-                    },
-                    complete: function(){
-                        $(this).css('text-indent', '400px');
-                        $('.for_3d_animate').animate({
-                            textIndent: 0
-                        }, {
-                            step: function(now, fx) {
-                                $('.search_page').css('-webkit-transform', 'translate3d(0,0,-'+now+'px) '+'rotateY(0deg)');
-                            },
-                            complete: function(){
-                                $('.start_page').addClass('displaynone');
-                                $('.page').removeClass('page3d');
-                                $('.page').css('-webkit-transform', 'none');
-                                $('.main').css('-webkit-perspective', '0');
-                                window.location.hash = 'amazon';
-                                //界面切换完成，向亚马逊发送数据
-                                //window.location.hash = 'amazon';                                
-                            },
-                            duration: 500
-                        }, 'ease');
-                    },
-                    duration:500
-                },'ease');        
-            },
-            duration: 500
-        }, 'ease');
+        $('.start_page').addClass('displaynone');
+        window.location.hash = 'amazon';
     });
     $('body').delegate('.search_bar_search_btn', 'touchstart', function(event) {
         $(this).addClass('touching');
