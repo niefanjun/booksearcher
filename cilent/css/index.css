@@ -8,6 +8,10 @@ body{
     position: fixed;
     z-index: 1;
 }
+.loadingimgsmall{
+    position: fixed;
+    z-index: 2;
+}
 .amazon_footer,.dangdang_footer, .jd_footer{
     position: fixed;
     width: 100%;

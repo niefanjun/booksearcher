@@ -11,8 +11,8 @@ loadlock['jd'] = 0;
 loadlock['login'] = 0;
 var nowuser='';
 //服务器名
-var SERVER = 'http://114.215.202.143:8000/'
-//var SERVER = 'http://192.168.35.140:8888/'
+//var SERVER = 'http://114.215.202.143:8000/'
+var SERVER = 'http://192.168.35.140:8888/'
 var testforstore;
 //记录页面状态
 var pagestate = {
@@ -407,6 +407,12 @@ $(document).ready(function(){
         left: WINDOWWIDTH/8*3+'px',
         top: (WINDOWHEIGHT/2-WINDOWWIDTH/8)+'px'
     });
+    $('.loadingimgsmall').css({
+        width: WINDOWWIDTH/8+'px',
+        height: WINDOWWIDTH/8+'px',
+        left: WINDOWWIDTH/16*7+'px',
+        top: (WINDOWHEIGHT/2-WINDOWWIDTH/16)+'px'
+    });
     $('#request img').css({
         'margin-top':'60%',
         'margin-left':(WINDOWWIDTH-78)/2+'px'
@@ -636,42 +642,6 @@ $(document).ready(function(){
                 }
             }
         });
-        /*console.log(ceil.find('img').attr('src'));
-        var data = {name:'',price:'',url:'',cover:'',info:'',author:'',user:''};
-        data.name = ceil.find('.name').text();
-        data.price = ceil.find('.price').text().substr(1);
-        data.url = ceil.find('.url').attr('href');
-        console.log(ceil.find('.url').attr('href'));
-        data.cover = ceil.find('img').attr('src');
-        data.info = ceil.find('.info').text();
-        data.user = nowuser;
-        var datapost = JSON.stringify(data);
-        if(ceil.find('.author').length)
-            data.info = ceil.find('.author').text();
-        $.ajax({
-            url:SERVER+'addcollect',   
-            dataType:'json',
-            type:'POST',
-            data: datapost,
-            error:function(){
-                
-            },
-            beforeSend:function(){
-                //锁死
-            },
-            success:function(data){
-                if(data.state == 0){
-                    $('#collectmessage img').attr('src', './img/deny.png');
-                    $('#collectmessage p').text(data.info);
-                    window.location.hash = 'collectmessage';
-                }
-                if(data.state == 1){
-                    $('#collectmessage img').attr('src', './img/pass.png');
-                    $('#collectmessage p').text(data.info);
-                    window.location.hash = 'collectmessage';
-                }
-            }
-        }); */
     });
     $(window).scroll(function(event) {
         console.log('when scroll, the current name is'+pagestate.current.name);
