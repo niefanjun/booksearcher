@@ -1,49 +1,187 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script type="text/javascript" src="./js/jquery.js"></script>
-  <script type="text/javascript" src="./js/jquery.transit.min.js"></script>
-  <script type="text/javascript" src="./js/index.js"></script>
-  <link rel="stylesheet" type="text/css" href="./css/index.css">
-  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="./css/jquery.mobile-1.3.2.min.css">
+<link rel="stylesheet" href="./css/index.css">
+<script src="./js/jquery-1.8.3.min.js"></script>
+<script src="./js/jquery.mobile-1.3.2.min.js"></script>
+<script src="./js/index.js"></script>
 </head>
 <body>
-<div class="main">
-
-  <!-- <input class="searchname" type="text" id="search"/>
-  <button class="search start" type="button">搜索</button>
-  <div class="booklistbox"></div> -->
-  <div class="start_page page">
-    <div class="logo">
-    <img src="./img/logo.png">
-    </div>
-    <div class="btn start_btn">
-      <div id='start'>开始使用</div>
-      <div id='search'>搜索</div>
+<img class="loadingimg displaynone" src="./img/loading.gif">
+<!-- <div class="normalmessagebox"></div> -->
+<!-- 开始页面 -->
+<div data-role="page" id="pagestart">
+  <div data-role="header" data-icon="home">
+    <h1>图书查询器</h1>
+  </div>
+  <div data-role="content">
+    <div class="start_content">
+      <div class="logo">
+      <img src="./img/logo.png">
+      </div>
+      <div class="logininput" data-role="fieldcontain">
+        <label for="user">用户名：</label>
+        <input type="text" name="user" id="user">
+        <label for="password">密码：</label>
+        <input type="password" name="password" id="password">
+      </div>
+      <a data-role="button" data-transition="slidedown" class="start_btn">登录</a>
+      <a data-role="button" data-transition="slidedown" class="regist_btn">注册</a>
     </div>
   </div>
-  <div class="search_page page">
-    <div class="search_bar">
-      <input class="searchname" type="text" placeholder="请输入书名" id="search"/>
-      <div class="search_bar_search_btn"><img src="./img/search.png"></div>
+</div>
+<!-- 注册反馈界面 -->
+<div data-role="page" id="request">
+  <div data-role="content">     
+      <img src="">
+      <p style="text-align:center"></p>
+      <a class="next" style="margin-top:40%" href="#pagesearch" data-role="button" data-transition="slidedown">继续</a>
+      <a class="pre" style="margin-top:40%" href="#pagestart" data-role="button" data-transition="slidedown">返回</a>
+  </div>
+</div> 
+<!-- 初始搜索页面 -->
+<div data-role="page" id="pagesearch">
+  <div data-role="header" data-icon="home">
+    <h1>请输入书名</h1>
+  </div>
+  <div data-role="content">
+    <div class="search_content">
+      <input type="text" name="bookname" id="bookname" placeholder="请输入书名">
+      <a href="#amazon" data-role="button" data-transition="slidedown" class="search_btn" >搜索</a>
     </div>
-    <div class="shop_select_bar">
-      <div class="select" id="amazon">亚马逊<span>◆</span></div>
-      <div id="dangdang">当当<span>◆</span></div>
-      <div id="jd">京东<span>◆</span></div>
+  </div>
+</div>
+
+<!-- 亚马逊页面 -->
+<div data-role="page" class="shoppage" id="amazon">
+  <div data-position="fixed" data-role="header" data-icon="home">
+    <input type="search" name="bookname" id="bookname_amazon" placeholder="请输入书名">
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#amazon" title="#amazon" class="ui-btn-active ui-state-persist" data-transition="none" data-icon="star">亚马逊
+        </a></li>
+        <li><a href="#dangdang" title="#dangdang" data-transition="none" data-icon="star">当当</a></li>
+        <li><a href="#jd" title="#jd" data-transition="none" data-icon="star">京东</a></li>
+        <li><a href="#collect" title="#collect" data-transition="none" data-icon="star">我的收藏</a></li>
+      </ul>
     </div>
-    <div class="booklistbox amazon">
+  </div>
+  <div data-role="content" class="defaul_content">
+    <div class="result_content">
       
     </div>
-    <div class="booklistbox dangdang displaynone">
+  </div>
+  <div data-role="footer"   class="ui-btn amazon_footer">
+    <a href="#" data-role="button" data-icon="search" class="shop_search" id="amazon">搜索</a>
+  </div>
+</div>
+
+<!-- 当当页面 -->
+<div data-role="page" class="shoppage" id="dangdang">
+  <div data-position="fixed" data-role="header" data-icon="home">
+    <input type="search" name="bookname" id="bookname_dangdang" placeholder="请输入书名">
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#amazon" title="#amazon" data-transition="none" data-icon="star">亚马逊
+        </a></li>
+        <li><a href="#dangdang" class="ui-btn-active ui-state-persist" title="#dangdang" data-transition="none" data-icon="star">当当</a></li>
+        <li><a href="#jd" title="#jd" data-transition="none" data-icon="star">京东</a></li>
+        <li><a href="#collect" title="#collect" data-transition="none" data-icon="star">我的收藏</a></li>
+      </ul>
+    </div>
+  </div>
+  <div data-role="content" class="defaul_content">
+    <div class="result_content">
       
     </div>
-    <div class="booklistbox jd displaynone">
+  </div>
+  <div data-role="footer"   class="ui-btn dangdang_footer">
+    <a href="#" data-role="button" data-icon="search" class="shop_search" id="dangdang">搜索</a>
+  </div>
+</div>
+
+<!-- 京东页面 -->
+<div data-role="page" class="shoppage" id="jd">
+  <div data-position="fixed" data-role="header" data-icon="home">
+    <input type="search" name="bookname" id="bookname_jd" placeholder="请输入书名">
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#amazon" title="#amazon" data-transition="none" data-icon="star">亚马逊
+        </a></li>
+        <li><a href="#dangdang" title="#dangdang" data-transition="none" data-icon="star">当当</a></li>
+        <li><a href="#jd" title="#jd" class="ui-btn-active ui-state-persist" data-transition="none" data-icon="star">京东</a></li>
+        <li><a href="#collect" title="#collect" data-transition="none" data-icon="star">我的收藏</a></li>
+      </ul>
+    </div>
+  </div>
+  <div data-role="content" class="defaul_content">
+    <div class="result_content">
+      
+    </div>
+  </div>
+  <div data-role="footer"   class="ui-btn jd_footer">
+    <a href="#" data-role="button" data-icon="search" class="shop_search" id="jd">搜索</a>
+  </div>
+</div>
+<!--收藏页面-->
+<div data-role="page" class="shoppage" id="collect">
+  <div data-position="fixed" data-role="header" data-icon="home">
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#amazon" title="#amazon" data-transition="none" data-icon="star">亚马逊
+        </a></li>
+        <li><a href="#dangdang" title="#dangdang" data-transition="none" data-icon="star">当当</a></li>
+        <li><a href="#jd" title="#jd"data-transition="none" data-icon="star">京东</a></li>
+        <li><a href="#collect" title="#collect" class="ui-btn-active ui-state-persist" data-transition="none" data-icon="star">我的收藏</a></li>
+      </ul>
+    </div>
+  </div>
+  <div data-role="content" class="defaul_content">
+    <div class="result_content">
       
     </div>
   </div>
 </div>
+
+<!-- 警告页面 -->
+<div data-role="page" id="nobookname">
+  <div data-role="header">
+    <h1>提示</h1>
+  </div>
+  <div data-role="content">
+    <p>请输入书名</p>
+  </div>
+</div>
+
+<div data-role="page" id="nowloading">
+  <div data-role="header">
+    <h1>提示</h1>
+  </div>
+  <div data-role="content">
+    <p>当前页面正在加载中，请稍后...</p>
+  </div>
+</div>
+
+<div data-role="page" id="messagedlg">
+  <div data-role="header">
+    <h1>提示</h1>
+  </div>
+  <div data-role="content">
+    <p></p>
+  </div>
+</div>
+
+<div data-role="page" id="collectmessage">
+  <div data-role="content">     
+      <img src="">
+      <p style="text-align:center"></p>
+      <a class="pre" style="margin-top:40%" href="#" data-role="button" data-transition="slidedown" data-rel="back">返回</a>
+  </div>
+</div> 
+
+
 </body>
 </html>
