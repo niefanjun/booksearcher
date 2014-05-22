@@ -452,7 +452,10 @@ function register(response,request){
                         message.state = 1;
                         message.info = '注册成功!';
                         console.log('registe success');
-                        response.writeHead(200,{'Content-Type':'application/json; charset=UTF-8'});
+                        response.writeHead(200,{
+                            'Set-Cookie': 'user='+user,
+                            'Content-Type':'application/json; charset=UTF-8'
+                        });
                         message = JSON.stringify(message);
                         response.write(callback+'('+message+')');
                         response.end();    
