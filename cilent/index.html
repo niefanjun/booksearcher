@@ -11,7 +11,7 @@
 </head>
 <body>
 <img class="loadingimg displaynone" src="./img/loading.gif">
-<img class="loadingimgsmall" src="./css/images/ajax-loader.gif">
+<img class="loadingimgsmall displaynone" src="./css/images/ajax-loader.gif">
 <!-- <div class="normalmessagebox"></div> -->
 <!-- 开始页面 -->
 <div data-role="page" id="pagestart">
@@ -50,7 +50,7 @@
   </div>
   <div data-role="content">
     <div class="search_content">
-      <input type="text" name="bookname" id="bookname" placeholder="请输入书名">
+      <input type="text" name="bookname" id="bookname" placeholder="请输入关键字，可以是名称、作者">
       <a href="#amazon" data-role="button" data-transition="slidedown" class="search_btn" >搜索</a>
     </div>
   </div>
@@ -59,7 +59,7 @@
 <!-- 亚马逊页面 -->
 <div data-role="page" class="shoppage" id="amazon">
   <div data-position="fixed" data-role="header" data-icon="home">
-    <input type="search" name="bookname" id="bookname_amazon" placeholder="请输入书名">
+    <input type="search" name="bookname" id="bookname_amazon" placeholder="请输入关键字，可以是名称、作者">
     <div data-role="navbar">
       <ul>
         <li><a href="#amazon" title="#amazon" class="ui-btn-active ui-state-persist" data-transition="none" data-icon="star">亚马逊
@@ -83,7 +83,7 @@
 <!-- 当当页面 -->
 <div data-role="page" class="shoppage" id="dangdang">
   <div data-position="fixed" data-role="header" data-icon="home">
-    <input type="search" name="bookname" id="bookname_dangdang" placeholder="请输入书名">
+    <input type="search" name="bookname" id="bookname_dangdang" placeholder="请输入关键字，可以是名称、作者">
     <div data-role="navbar">
       <ul>
         <li><a href="#amazon" title="#amazon" data-transition="none" data-icon="star">亚马逊
@@ -107,7 +107,7 @@
 <!-- 京东页面 -->
 <div data-role="page" class="shoppage" id="jd">
   <div data-position="fixed" data-role="header" data-icon="home">
-    <input type="search" name="bookname" id="bookname_jd" placeholder="请输入书名">
+    <input type="search" name="bookname" id="bookname_jd" placeholder="请输入关键字，可以是名称、作者">
     <div data-role="navbar">
       <ul>
         <li><a href="#amazon" title="#amazon" data-transition="none" data-icon="star">亚马逊
@@ -141,12 +141,30 @@
     </div>
   </div>
   <div data-role="content" class="defaul_content">
+  <p class="displaynone" style="text-align:center;color:#808080;margin-top:30%">你还没有添加任何收藏</p>
     <div class="result_content">
       
     </div>
   </div>
 </div>
-
+<!-- 商品详情页面 -->
+<div data-transition="none" data-role="dialog" id="goodsdetail">
+  <div data-role="header">
+    <h1>详细信息</h1>
+  </div>
+  <div data-role="content">
+    <img src="">
+    <div class="detail_name"><div class="detail_name_title">书名</div><div class="bookname"></div></div>
+    <div class="detail_info"><div class="detail_info_title">信息</div><div class="bookinfo"></div></div>
+    <div class="detail_author"><div class="detail_author_title">作者</div><div class="bookauthor"></div></div>
+    <div class="detail_price"><div class="detail_price_title">价格</div><div class="bookprice"></div></div>
+    <div class="detail_btn">
+      <a data-role="button" data-transition="slidedown" class="shop_btn"  data-theme="a">访问店铺</a>
+      <a data-role="button" data-transition="slidedown" class="return_btn" data-rel="back" >返回</a>
+      
+    </div>
+  </div>
+</div>
 <!-- 警告页面 -->
 <div data-role="page" id="nobookname">
   <div data-role="header">
@@ -179,10 +197,31 @@
   <div data-role="content">     
       <img src="">
       <p style="text-align:center"></p>
-      <a class="pre" style="margin-top:40%" href="#" data-role="button" data-transition="slidedown" data-rel="back">返回</a>
+      <a class="pre" style="margin-top:40%" href="#" data-role="button" data-transition="slidedown">确认</a>
   </div>
 </div> 
 
+<!-- 提示没有更多的搜索结果了 -->
+<div data-role="dialog" id="nomoresearchresult">
+  <div data-role="header">
+    <h1>提示</h1>
+  </div>
+  <div data-role="content">
+    <p style="text-align:center"></p>
+      <a class="pre" style="margin-top:40%" href="#" data-role="button" data-transition="slidedown">返回</a>
+  </div>
+</div>
+
+<!-- 提示网络异常 -->
+<div data-role="dialog" id="neterror">
+  <div data-role="header">
+    <h1>提示</h1>
+  </div>
+  <div data-role="content">
+    <p style="text-align:center"></p>
+      <a class="pre" style="margin-top:40%" href="#" data-role="button" data-transition="slidedown">返回</a>
+  </div>
+</div>
 
 </body>
 </html>

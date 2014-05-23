@@ -73,6 +73,10 @@ body{
     width: 0; 
     height: 0;
 }
+.detail_name_title,.detail_info_title,.detail_author_title,.detail_price_title{
+    font-weight: bold;
+    font-size: 20px;
+}
 /* button 
 ---------------------------------------------- */
 .button {

@@ -31,6 +31,9 @@ mysql.query('select user from '+TABLE_USER+' where 1',function(error,result){
         console.log(result);
     }
 });
+//服务器缓存
+var webcatch = new Array();
+
 //取得cookie
 function getcookie(cookie,store){
     cookie.split(';').forEach(function( data ) {
@@ -131,7 +134,10 @@ function getbooklist(webname,bookinfo,data,keyword,user){
         var html = $(data).find('.shoplist ul li');
         var num = html.length;
         bookinfo[0] = keyword;
-        console.log(num);
+        if(user)
+            bookinfo[1] = user;
+        else
+            bookinfo[1] = '';
         if(num == 0)
             return false;
         for(var i = 2;i-2 < num;i++){
@@ -157,6 +163,10 @@ function getbooklist(webname,bookinfo,data,keyword,user){
         var html = $(data).find('.m .item');
         var num = html.length;
         bookinfo[0] = keyword;
+        if(user)
+            bookinfo[1] = user;
+        else
+            bookinfo[1] = '';
         if(num == 0)
             return false;
         for(var i = 2;i-2 <num;i++){
@@ -207,7 +217,23 @@ function amazon(response,request){
             return;
         }        
     }
+    
     var bookname = arg.bookname;
+    //if catch
+    if(webcatch[arg.bookname+arg.page+'amazon']){
+        console.log('get catch:'+arg.bookname+arg.page+'amazon');
+        getbooklist('amazon',bookinfo,webcatch[arg.bookname+arg.page+'amazon'],bookname,store.user);
+        //构造jsonp函数来返回结果
+        bookinfo = JSON.stringify(bookinfo);
+        console.log(bookinfo);
+        response.writeHead(200,{
+            'Set-Cookie': 'keyword='+arg.bookname,
+            'Content-Type':'application/json; charset=UTF-8'
+        });
+        response.write(callback+'('+bookinfo+')');
+        response.end();
+        return;
+    }
     console.log(arg.bookname);
     console.log('http://www.amazon.cn/s/ref=sr_pg_2?rh=n%3A658390051%2Ck%3A&page='+arg.page+'&keywords='+arg.bookname);
     http.get('http://www.amazon.cn/s/ref=sr_pg_2?rh=n%3A658390051%2Ck%3A&page='+arg.page+'&keywords='+arg.bookname, function(res) {
@@ -215,6 +241,13 @@ function amazon(response,request){
         res.on('data', function(data) {
             html += data;
         }).on('end',function(){
+            //not catch
+            if(webcatch.length>=100){
+                console.log('clear catch');
+                webcatch = [];
+            }
+            console.log('write catch');
+            webcatch[arg.bookname+arg.page+'amazon'] = html;
 
             getbooklist('amazon',bookinfo,html,bookname,store.user);
             //构造jsonp函数来返回结果
@@ -264,6 +297,21 @@ function dangdang(response,request){
     }
     var bookname = arg.bookname;
     console.log('bookname is: '+bookname);
+
+    if(webcatch[bookname+arg.page+'dangdang']){
+        console.log('get catch:'+arg.bookname+arg.page+'dangdang');
+        getbooklist('dangdang',bookinfo,webcatch[arg.bookname+arg.page+'dangdang'],bookname,store.user);
+        //构造jsonp函数来返回结果
+        bookinfo = JSON.stringify(bookinfo);
+        console.log(bookinfo);
+        response.writeHead(200,{
+            'Set-Cookie': 'keyword='+arg.bookname,
+            'Content-Type':'application/json; charset=UTF-8'
+        });
+        response.write(callback+'('+bookinfo+')');
+        response.end();
+        return;
+    }
     //对传入的书名进行转码
     console.log('before encode'+arg.bookname);
     booknamegbk = iconv.encode(arg.bookname,'gb2312');
@@ -282,6 +330,12 @@ function dangdang(response,request){
             //将获得的网页从gb2312码转换为utf-8码
             var buf = buffer.toBuffer();
             html = iconv.decode(buf,'gb2312');
+            if(webcatch.length>=100){
+                console.log('clear catch');
+                webcatch = [];
+            }
+            console.log('write catch');
+            webcatch[bookname+arg.page+'dangdang'] = html;
             //console.log(html);
             getbooklist('dangdang',bookinfo,html,bookname,store.user);
             //构造jsonp函数来返回结果
@@ -327,6 +381,20 @@ function jd(response,request){
         }        
     }
     var bookname = arg.bookname;
+    if(webcatch[bookname+arg.page+'jd']){
+        console.log('get catch:'+arg.bookname+arg.page+'jd');
+        getbooklist('jd',bookinfo,webcatch[arg.bookname+arg.page+'jd'],bookname,store.user);
+        //构造jsonp函数来返回结果
+        bookinfo = JSON.stringify(bookinfo);
+        console.log(bookinfo);
+        response.writeHead(200,{
+            'Set-Cookie': 'keyword='+arg.bookname,
+            'Content-Type':'application/json; charset=UTF-8'
+        });
+        response.write(callback+'('+bookinfo+')');
+        response.end();
+        return;
+    }
     //构造get请求参数
     var options = {
         port: 80,
@@ -345,8 +413,13 @@ function jd(response,request){
             console.log(data+'OK');
             html += data;
         }).on('end',function(){
-            console.log(html);
-            getbooklist('jd',bookinfo,html,bookname,store.usr);
+            if(webcatch.length>=100){
+                console.log('clear catch');
+                webcatch = [];
+            }
+            console.log('write catch');
+            webcatch[bookname+arg.page+'jd'] = html;
+            getbooklist('jd',bookinfo,html,bookname,store.user);
             //构造jsonp函数来返回结果
             bookinfo = JSON.stringify(bookinfo);
             console.log(bookinfo);
