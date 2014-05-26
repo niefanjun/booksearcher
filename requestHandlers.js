@@ -16,6 +16,7 @@ var MYSQL_PASS = 'niefanjun';
 var DATABASE = 'bookseacher';
 var TABLE_USER = 'user';
 var TABLE_COLLECT = 'collect';
+var TABLE_COMMENT = 'comment';
 
 var mysql = _mysql.createConnection({
     host: HOST,
@@ -174,9 +175,7 @@ function getbooklist(webname,bookinfo,data,keyword,user){
             bookinfo[i] = {name:'',price:'',url:'',cover:'',info:'',author:''};
             current = html.eq(i-2);
             bookinfo[i].name = current.find('.p-name a').text();
-            console.log(bookinfo[i].name);
-            bookinfo[i].name = bookinfo[i].name.match(/[^\s\t\n][^\t\n]*[^\s\t\n]|[^\s\t\n]/);
-            console.log(bookinfo[i].name);     
+            bookinfo[i].name = bookinfo[i].name.match(/[^\s\t\n][^\t\n]*[^\s\t\n]|[^\s\t\n]/);    
             var discount = parseFloat(current.find('.p-price .dd .discount').text().substr(1,3));
             var l_price = parseFloat(current.find('.p-market .dd del').text().substr(1));
             bookinfo[i].price = discount*l_price/10;
@@ -191,6 +190,7 @@ function getbooklist(webname,bookinfo,data,keyword,user){
 }
 function amazon(response,request){
     console.log('amazon was called');
+    var searchurl;
     var arg = url.parse(request.url,true).query;
     
     //用于储存得到的html页面
@@ -220,9 +220,9 @@ function amazon(response,request){
     
     var bookname = arg.bookname;
     //if catch
-    if(webcatch[arg.bookname+arg.page+'amazon']){
-        console.log('get catch:'+arg.bookname+arg.page+'amazon');
-        getbooklist('amazon',bookinfo,webcatch[arg.bookname+arg.page+'amazon'],bookname,store.user);
+    if(webcatch[bookname+arg.page+'amazon'+arg.way]){
+        console.log('get catch:'+bookname+arg.page+'amazon'+arg.way);
+        getbooklist('amazon',bookinfo,webcatch[bookname+arg.page+'amazon'+arg.way],bookname,store.user);
         //构造jsonp函数来返回结果
         bookinfo = JSON.stringify(bookinfo);
         console.log(bookinfo);
@@ -235,8 +235,17 @@ function amazon(response,request){
         return;
     }
     console.log(arg.bookname);
+    console.log(arg.way);
     console.log('http://www.amazon.cn/s/ref=sr_pg_2?rh=n%3A658390051%2Ck%3A&page='+arg.page+'&keywords='+arg.bookname);
-    http.get('http://www.amazon.cn/s/ref=sr_pg_2?rh=n%3A658390051%2Ck%3A&page='+arg.page+'&keywords='+arg.bookname, function(res) {
+    //对应不同的way值使用不同的url
+    if(arg.way == '1')
+        searchurl = 'http://www.amazon.cn/s/ref=sr_pg_2?rh=n%3A658390051%2Ck%3A&page='+arg.page+'&keywords='+arg.bookname;
+    if(arg.way == '2')//populate
+        searchurl = 'http://www.amazon.cn/s/ref=sr_pg_2?rh=n%3A658390051%2Ck%3A&page='+arg.page+'&sort=popularity-rank&keywords='+arg.bookname;
+    if(arg.way == '3')
+        searchurl = 'http://www.amazon.cn/s/ref=sr_pg_2?rh=n%3A658390051%2Ck%3A&page='+arg.page+'&sort=price-asc-rank&keywords='+arg.bookname;
+    console.log(searchurl);
+    http.get(searchurl, function(res) {
         console.log("Got response: " + res.statusCode);
         res.on('data', function(data) {
             html += data;
@@ -246,8 +255,8 @@ function amazon(response,request){
                 console.log('clear catch');
                 webcatch = [];
             }
-            console.log('write catch');
-            webcatch[arg.bookname+arg.page+'amazon'] = html;
+            console.log('write catch: '+arg.bookname+arg.page+'amazon'+arg.way);
+            webcatch[arg.bookname+arg.page+'amazon'+arg.way] = html;
 
             getbooklist('amazon',bookinfo,html,bookname,store.user);
             //构造jsonp函数来返回结果
@@ -298,9 +307,9 @@ function dangdang(response,request){
     var bookname = arg.bookname;
     console.log('bookname is: '+bookname);
 
-    if(webcatch[bookname+arg.page+'dangdang']){
-        console.log('get catch:'+arg.bookname+arg.page+'dangdang');
-        getbooklist('dangdang',bookinfo,webcatch[arg.bookname+arg.page+'dangdang'],bookname,store.user);
+    if(webcatch[bookname+arg.page+'dangdang'+arg.way]){
+        console.log('get catch:'+bookname+arg.page+'dangdang'+arg.way);
+        getbooklist('dangdang',bookinfo,webcatch[bookname+arg.page+'dangdang'+arg.way],bookname,store.user);
         //构造jsonp函数来返回结果
         bookinfo = JSON.stringify(bookinfo);
         console.log(bookinfo);
@@ -318,8 +327,14 @@ function dangdang(response,request){
     arg.bookname = gb2312decode(booknamegbk);
     console.log('after bookname is :'+bookname);
     console.log('after encode'+arg.bookname);
-    var searchurl = 'http://search.dangdang.com/?key='+arg.bookname+'&category_path=01.00.00.00.00.00&page_index='+arg.page;
-
+    var searchurl;
+    if(arg.way == '1')
+        searchurl = 'http://search.dangdang.com/?key='+arg.bookname+'&category_path=01.00.00.00.00.00&page_index='+arg.page;
+    if(arg.way == '2')//populate
+        searchurl = 'http://search.dangdang.com/?key='+arg.bookname+'&category_path=01.00.00.00.00.00&page_index='+arg.page+'&sort_type=sort_sale_amt_desc';
+    if(arg.way == '3')
+        searchurl = 'http://search.dangdang.com/?key='+arg.bookname+'&category_path=01.00.00.00.00.00&page_index='+arg.page+'&sort_type=sort_xlowprice_asc';
+    console.log(searchurl);
     //使用jquery来获dangdang的搜索界面
     console.log(searchurl);
     http.get(searchurl, function(res) {
@@ -335,7 +350,7 @@ function dangdang(response,request){
                 webcatch = [];
             }
             console.log('write catch');
-            webcatch[bookname+arg.page+'dangdang'] = html;
+            webcatch[bookname+arg.page+'dangdang'+arg.way] = html;
             //console.log(html);
             getbooklist('dangdang',bookinfo,html,bookname,store.user);
             //构造jsonp函数来返回结果
@@ -352,11 +367,15 @@ function dangdang(response,request){
       console.log("Got error: " + e.message);
     });
 }
+
+
+
+
 function jd(response,request){
     console.log('jd was called');
     
     var arg = url.parse(request.url,true).query;
-
+    var searchurl;
     //用于储存得到的html页面
     var html = '';
     //用于储存返回的图书列表
@@ -381,9 +400,9 @@ function jd(response,request){
         }        
     }
     var bookname = arg.bookname;
-    if(webcatch[bookname+arg.page+'jd']){
-        console.log('get catch:'+arg.bookname+arg.page+'jd');
-        getbooklist('jd',bookinfo,webcatch[arg.bookname+arg.page+'jd'],bookname,store.user);
+    if(webcatch[bookname+arg.page+'jd'+arg.way]){
+        console.log('get catch:'+arg.bookname+arg.page+'jd'+arg.way);
+        getbooklist('jd',bookinfo,webcatch[arg.bookname+arg.page+'jd'+arg.way],bookname,store.user);
         //构造jsonp函数来返回结果
         bookinfo = JSON.stringify(bookinfo);
         console.log(bookinfo);
@@ -395,11 +414,18 @@ function jd(response,request){
         response.end();
         return;
     }
+    if(arg.way == '1')
+        searchurl = '/search?keyword='+arg.bookname+'&enc=utf-8&book=y&page='+arg.page;
+    if(arg.way == '2')//populate
+        searchurl = '/search?keyword='+arg.bookname+'&enc=utf-8&rt=1&book=y&psort=3&area=1&page='+arg.page;
+    if(arg.way == '3')
+        searchurl = '/search?keyword='+arg.bookname+'&enc=utf-8&rt=1&book=y&area=1&psort=2&page='+arg.page;
+    console.log(bookname+arg.page+'jd'+arg.way);
     //构造get请求参数
     var options = {
         port: 80,
         hostname: 'search.jd.com',
-        path: '/search?keyword='+arg.bookname+'&enc=utf-8&book=y&page='+arg.page,
+        path: searchurl,
         headers: {
           'User-Agent':'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.137 Safari/537.36'
         }
@@ -407,10 +433,9 @@ function jd(response,request){
 
     //使用jquery来获得亚马逊的搜索界面
     http.get(options, function(res) {
-        console.log("Got response: " + res.statusCode);
-        console.log("headers: " + res.headers.location);
+        //console.log("Got response: " + res.statusCode);
+        //console.log("headers: " + res.headers.location);
         res.on('data', function(data) { 
-            console.log(data+'OK');
             html += data;
         }).on('end',function(){
             if(webcatch.length>=100){
@@ -418,11 +443,12 @@ function jd(response,request){
                 webcatch = [];
             }
             console.log('write catch');
-            webcatch[bookname+arg.page+'jd'] = html;
+            console.log(bookname+arg.page+'jd'+arg.way);
+            webcatch[bookname+arg.page+'jd'+arg.way] = html;
             getbooklist('jd',bookinfo,html,bookname,store.user);
             //构造jsonp函数来返回结果
             bookinfo = JSON.stringify(bookinfo);
-            console.log(bookinfo);
+            //console.log(bookinfo);
             response.writeHead(200,{
                 'Set-Cookie': 'keyword='+bookname,
                 'Content-Type':'application/json; charset=UTF-8'
@@ -579,9 +605,10 @@ function addcollect(response,request){
 
     request.addListener('end', function() {
         // 数据接收完毕，执行回调函数
+        console.log('the postdata: '+postData);
         postDataJSON = JSON.parse(postData);
         console.log(postDataJSON.name);
-        console.log(postData);
+        
         response.writeHead(200,{
             'Access-Control-Allow-Origin':'*',
             'Access-Control-Allow-Methods':'POST,GET',
@@ -660,6 +687,106 @@ function removecollect(response,request){
         });
     }
 }
+function getcomment(response,request){
+    var postData = '';
+    console.log('getcomment was called');
+    // 设置接收数据编码格式为 UTF-8
+    request.setEncoding('utf8');
+
+    // 接收数据块并将其赋值给 postData
+    request.addListener('data', function(postDataChunk) {
+        postData += postDataChunk;
+    });
+    request.addListener('end', function(){
+        console.log('the postdata is:'+postData);
+        var mysqlstring = 'select * from '+TABLE_COMMENT+' where url="'+postData+'"';
+        console.log(mysqlstring);
+        mysql.query(mysqlstring,function(error,result){
+                if (error) {throw error};
+                console.log('after search');
+                if(result == ''){
+                    console.log('no result');
+                    response.writeHead(200,{
+                    'Access-Control-Allow-Origin':'*',
+                    'Access-Control-Allow-Methods':'POST,GET',
+                    'Access-Control-Allow-Headers':'Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept',
+                    'Access-Control-Allow-Credentials':'true',
+                    'Content-Type':'application/json; charset=UTF-8'
+                    });
+                    response.write('0');
+                    response.end();   
+                }
+                else{
+                    console.log('has result:'+result);
+                    data = JSON.stringify(result);
+                    console.log(data);
+                    response.writeHead(200,{
+                        'Access-Control-Allow-Origin':'*',
+                        'Access-Control-Allow-Methods':'POST,GET',
+                        'Access-Control-Allow-Headers':'Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept',
+                        'Access-Control-Allow-Credentials':'true',
+                        'Content-Type':'application/json; charset=UTF-8'
+                    });
+                    response.write(data);
+                    response.end();
+                }
+            });
+    });
+}
+function addcomment(response,request){
+    var postData = '';
+    var postDataJSON;
+    var data
+    console.log('addcollect was called');
+    // 设置接收数据编码格式为 UTF-8
+    request.setEncoding('utf8');
+
+    // 接收数据块并将其赋值给 postData
+    request.addListener('data', function(postDataChunk) {
+        postData += postDataChunk;
+    });
+
+    request.addListener('end', function(){
+        console.log('the postdata is:'+postData);
+        postDataJSON = JSON.parse(postData);
+        mysql.query('insert into '+TABLE_COMMENT+' (user,url,comment) values("'+postDataJSON.user+'","'+postDataJSON.url+'","'+postDataJSON.comment+'")',function(error,result){
+            if (error) {throw error};
+            console.log(postDataJSON.url);
+            console.log('after insert');
+            mysql.query('select * from '+TABLE_COMMENT+' where url="'+postDataJSON.url+'"',function(error,result){
+                console.log(postDataJSON.url);
+                if (error) {throw error};
+                console.log('after search');
+                if(result == ''){
+                    console.log('no result');
+                    response.writeHead(200,{
+                    'Access-Control-Allow-Origin':'*',
+                    'Access-Control-Allow-Methods':'POST,GET',
+                    'Access-Control-Allow-Headers':'Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept',
+                    'Access-Control-Allow-Credentials':'true',
+                    'Content-Type':'application/json; charset=UTF-8'
+                    });
+                    response.write('0');
+                    response.end();   
+                }
+                else{
+                    console.log('has result:'+result);
+                    data = JSON.stringify(result);
+                    console.log(data);
+                    response.writeHead(200,{
+                        'Access-Control-Allow-Origin':'*',
+                        'Access-Control-Allow-Methods':'POST,GET',
+                        'Access-Control-Allow-Headers':'Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept',
+                        'Access-Control-Allow-Credentials':'true',
+                        'Content-Type':'application/json; charset=UTF-8'
+                    });
+                    response.write(data);
+                    response.end();
+                }
+            });
+        });
+    });
+}
 exports.amazon = amazon;
 exports.dangdang = dangdang;
 exports.jd = jd;
@@ -669,3 +796,5 @@ exports.logout = logout;
 exports.collect = collect;
 exports.addcollect = addcollect;
 exports.removecollect = removecollect;
+exports.getcomment = getcomment;
+exports.addcomment = addcomment;

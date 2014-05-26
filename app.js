@@ -11,4 +11,6 @@ handle['/logout'] = requestHandlers.logout;
 handle['/collect'] = requestHandlers.collect;
 handle['/addcollect'] = requestHandlers.addcollect;
 handle['/removecollect'] = requestHandlers.removecollect;
+handle['/getcomment'] = requestHandlers.getcomment;
+handle['/addcomment'] = requestHandlers.addcomment;
 server.start(router.route,handle);
