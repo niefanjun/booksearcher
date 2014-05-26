@@ -11,6 +11,8 @@ loadlock['jd'] = 0;
 loadlock['login'] = 0;
 loadlock['collect'] = 0;
 loadlock['delete'] = 0;
+loadlock['getcomment'] = 0;
+loadlock['addcomment'] = 0;
 var datacatch = new Array();
 datacatch['amazon'] = new Array();
 datacatch['dangdang'] = new Array();
@@ -36,9 +38,20 @@ var neterror = new Array();
 nomorepage['amazon'] = 0;
 nomorepage['dangdang'] = 0;
 nomorepage['jd'] = 0;
+//用来标记排序的方式
+//默认为1
+//按人气排为2
+//按价格排为3
+var sortway = new Array();
+sortway['amazon'] = 1;
+sortway['dangdang'] = 1;
+sortway['jd'] = 1;
+
+
+
 var nowuser='';
 //服务器名
-//var SERVER = 'http://114.215.202.143:8000/'
+//var SERVER = 'http://114.215.202.143:8888/'
 var SERVER = 'http://192.168.35.140:8888/'
 //记录页面状态
 var pagestate = {
@@ -131,6 +144,27 @@ function loadcollect(data){
     console.log('test');
     formartceil('#collect .bookceil.pagecollect'); 
 }
+//取得评论
+function getcomment(data){
+    console.log('in getcomment');
+    if (data == '0'){
+        $('#usercomment p').removeClass('displaynone');
+        $('#usercomment .comment_content').addClass('displaynone');
+    }
+    else{
+        $('#usercomment .comment_content').removeClass('displaynone');
+        $('#usercomment p').addClass('displaynone');
+    }
+    var length = data.length;
+    for(var i = 0;i<length;i++){
+        var ceil = $('<div class="comment_ceil"></div>');
+        ceil.append('<h2>'+data[i].user+' 说</h2>');
+        console.log('user is :'+data[i].user);
+        ceil.append('<h3>'+data[i].comment+'</h3>');
+        console.log('user is :'+data[i].comment);
+        $('.comment_content').append(ceil);
+    }
+}
 //对商品列表的元素进行布局
 function formartceil(selecter){
     var urlwidth = WINDOWWIDTH/6.4;
@@ -202,8 +236,9 @@ function formartceil(selecter){
 }
 //搜索按钮函数
 function searchbook(pagename,bookname){
-    if(pagestate.current.keyword == bookname && neterror[pagestate.current.name] == 0)
-        return;
+    //由于加入了排序，暂时将这个除重删掉
+/*    if(pagestate.current.keyword == bookname && neterror[pagestate.current.name] == 0)
+        return;*/
     $('.shoppage#'+pagestate.current.name+' .result_content').empty();
     console.log('searchbook');
     $('.loadingimg').removeClass('displaynone');
@@ -258,7 +293,7 @@ function loadmore(){
     ceilcount[pagestate.current.name] = 0;
     $('.loadingimg').removeClass('displaynone');
     $.ajax({
-        url:SERVER+pagestate.current.name+'?callback=?&bookname='+pagestate.current.keyword+'&page='+(pagestate.current.page+1),   
+        url:SERVER+pagestate.current.name+'?callback=?&bookname='+pagestate.current.keyword+'&page='+(pagestate.current.page+1)+'&way='+sortway[pagestate.current.name],   
         dataType:'jsonp',
         timeout: 10000,
         error:function(){
@@ -444,7 +479,16 @@ window.onhashchange = function(){
         dohashchange[hash]();
     
 }
-
+$( document ).on( "pageinit", ".shoppage", function() {
+    $( document ).on( "swiperight", ".shoppage", function( e ) {
+        // We check if there is no open panel on the page because otherwise
+        // a swipe to close the left panel would also open the right panel (and v.v.).
+        // We do this by checking the data that the framework stores on the page element (panel: open).
+        if ( $.mobile.activePage.jqmData( "panel" ) !== "open" ) {
+                $.mobile.activePage.find('#sortby').panel( "open" );
+        }
+    });
+});
 $(document).ready(function(){
     var hash = window.location.hash.substr(1);
     if(typeof dohashchange[hash] === 'function')
@@ -498,9 +542,15 @@ $(document).ready(function(){
     $('#collect p').css({
         'font-size':WINDOWWIDTH/14+'px'
     });
+    $('#usercomment p').css({
+        'font-size':WINDOWWIDTH/14+'px'
+    });
+    /*$('.shoppage .opion').css({
+    });*/
+    console.log('test'+$('.shoppage .opion').parent('div').html());
     $('body').delegate('#pagesearch .search_btn', 'click', function(event) {
         //$(this).attr('data-rel', 'dialog');
-        var inputvar = $('#pagesearch .search_content input').val()
+        var inputvar = $('#pagesearch .search_content input').val();
         if (inputvar == '') {
             //弹出对话框
             $(this).attr({
@@ -514,6 +564,7 @@ $(document).ready(function(){
             reflashcurrentstate('amazon',inputvar,1);
         }
     });
+    //搜索按钮
     $('body').delegate('.shoppage .shop_search', 'click', function(event) {
         var keyword = $('.shoppage#'+pagestate.current.name+' #bookname_'+pagestate.current.name).val();
         if(loadlock[pagestate.current.name] == 1){
@@ -770,6 +821,110 @@ $(document).ready(function(){
             width: '50%',
             'margin-left':'25%'
         });
+        $('#goodsdetail .returnback').attr('href', '#'+pagestate.current.name);
+        $('#usercomment .returnback').attr('href', '#'+pagestate.current.name);
+    });
+
+    //评论按钮
+    $('body').delegate('#goodsdetail #comment', 'click', function(event) {
+        var bookurl = $('#goodsdetail .shop_btn').attr('href');
+        $('#usercomment .comment_content').empty();
+        $.ajax({
+            url:SERVER+'getcomment',   
+            dataType:'json',
+            type:'POST',
+            data: bookurl,
+            beforeSend:function(){
+                if(loadlock['getcomment'] == 1){
+                    console.log('getcomment is beasy');
+                    return false;
+                }
+                loadlock['getcomment'] = 1;
+            },
+            error:function(){
+                loadlock['getcomment'] = 0;
+            },
+            success:function(data){
+                //加载数据页
+                getcomment(data);
+                loadlock['getcomment'] = 0;
+            }
+        });
+    });
+    //发布按钮
+    $('body').delegate('.comment_output', 'click', function(event) {
+        var inputvar = $('#usercomment .comment_bar input').val();
+        if(inputvar == ''){
+            $(this).attr({
+                'href': '#nocomment',
+                'data-rel': 'dialog'
+            });
+            return;
+        }
+        else{
+            $(this).removeAttr('data-rel').removeAttr('href');
+        }
+        var data = {user:'',url:'',comment:''};
+        data.user = nowuser;
+        console.log('nowuser is'+nowuser);
+        data.url = $('#goodsdetail .shop_btn').attr('href');
+        console.log('nowuser is'+data.url);
+        data.comment = inputvar;
+        console.log('out put comment');
+        var datapost = JSON.stringify(data);
+        $.ajax({
+            url:SERVER+'addcomment',   
+            dataType:'json',
+            type:'POST',
+            data: datapost,
+            error:function(){
+                loadlock['addcomment'] = 0;
+            },
+            beforeSend:function(){
+                //锁死
+                if(loadlock['addcomment'] == 1){
+                    console.log('collect is beasy');
+                    return false;
+                }
+                loadlock['addcomment'] = 1;
+            },
+            success:function(data){
+                $('#usercomment .comment_content').empty();
+                getcomment(data);
+                loadlock['addcomment'] = 0;
+            }
+        });
+    });
+    $('#sortby a').click(function(event) {
+        console.log('click sorttype');
+        if($(this).hasClass('default')){
+            sortway[pagestate.current.name] = 1;
+        }
+        if($(this).hasClass('popular')){
+            sortway[pagestate.current.name] = 2;
+        }
+        if($(this).hasClass('price')){
+            sortway[pagestate.current.name] = 3;
+        }
+        console.log('now way is:'+sortway[pagestate.current.name]);
+        var keyword = $('.shoppage#'+pagestate.current.name+' #bookname_'+pagestate.current.name).val();
+        if(loadlock[pagestate.current.name] == 1){
+            $(this).attr({
+                'href': '#nowloading',
+                'data-rel': 'dialog'
+            });
+        }
+        else if(keyword == ''){
+            $(this).attr({
+                'href': '#nobookname',
+                'data-rel': 'dialog'
+            });   
+        }
+        else{
+            nomorepage[pagestate.current.name] = 0;
+            $(this).removeAttr('data-rel').removeAttr('href');
+            searchbook(pagestate.current.name,keyword);
+        }
     });
     //滚动屏幕的时候做加载
     //但是由于在刷新页面的

@@ -29,14 +29,12 @@ body{
     height: 100%;
 }
 .shop_search{
-    margin: 0 auto;
-    width: 60%;
 }
 .bookceil{
     position: relative;
     box-shadow: 0px 4px 6px 0px #787878;
     overflow: hidden;
-    background: rgba(51,153,204,0.3);
+    background: rgba(111,111,111,0.3);
 }
 .bookceil .cover{
     float: left;;
@@ -77,6 +75,30 @@ body{
     font-weight: bold;
     font-size: 20px;
 }
+.ui-input-search{
+    width: 65%;
+    float: left;
+}
+.searchbar .opion{
+
+}
+.comment_ceil{
+    border: 1px solid #ccc;
+    background-image: linear-gradient(#fff,#f1f1f1);  
+    margin-bottom: 10px;
+}
+#usercomment .ui-input-text{
+    width: 70%;
+}
+#usercomment .comment_output{
+    width: 20%;
+    top:0;
+    position: absolute;
+}
+.comment_bar{
+    position: relative;
+}
+
 /* button 
 ---------------------------------------------- */
 .button {

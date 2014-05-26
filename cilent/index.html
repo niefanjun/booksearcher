@@ -29,7 +29,7 @@
         <label for="password">密码：</label>
         <input type="password" name="password" id="password">
       </div>
-      <a data-role="button" data-transition="slidedown" class="start_btn">登录</a>
+      <a data-role="button" data-transition="slidedown" data-theme="b" class="start_btn">登录</a>
       <a data-role="button" data-transition="slidedown" class="regist_btn">注册</a>
     </div>
   </div>
@@ -59,7 +59,9 @@
 <!-- 亚马逊页面 -->
 <div data-role="page" class="shoppage" id="amazon">
   <div data-position="fixed" data-role="header" data-icon="home">
-    <input type="search" name="bookname" id="bookname_amazon" placeholder="请输入关键字，可以是名称、作者">
+    <div class="searchbar">
+    <input type="search" name="bookname" id="bookname_amazon" placeholder="请输入关键字，可以是名称、作者"><a class="shop_search" data-role="button" data-theme="b" class="ui-btn-right" data-inline="true">搜索</a>
+    </div>
     <div data-role="navbar">
       <ul>
         <li><a href="#amazon" title="#amazon" class="ui-btn-active ui-state-persist" data-transition="none" data-icon="star">亚马逊
@@ -75,15 +77,26 @@
       
     </div>
   </div>
-  <div data-role="footer"   class="ui-btn amazon_footer">
-    <a href="#" data-role="button" data-icon="search" class="shop_search" id="amazon">搜索</a>
-  </div>
+<!-- 面板 -->
+    <div data-role="panel" id="sortby" data-theme="b"> 
+      <div class="panel-content"> 
+        <h3> 排序方式</h3> 
+        <div data-role="controlgroup" data-type="vertical">
+        <a href="#" data-role="button" class="default">默认</a>
+        <a href="#" data-role="button" class="popular">按人气降序</a>
+        <a href="#" data-role="button" class="price">按价格升序</a>
+        </div>
+      </div>
+      <a href="#demo-links" style="margin-top:100%;width: 90%" data-rel="close" data-role="button" data-theme="a" data-icon="delete" data-inline="true"> 取消</a>
+    </div> 
 </div>
 
 <!-- 当当页面 -->
 <div data-role="page" class="shoppage" id="dangdang">
   <div data-position="fixed" data-role="header" data-icon="home">
-    <input type="search" name="bookname" id="bookname_dangdang" placeholder="请输入关键字，可以是名称、作者">
+    <div class="searchbar">
+    <input type="search" name="bookname" id="bookname_dangdang" placeholder="请输入关键字，可以是名称、作者"><a class="shop_search" data-role="button" data-theme="b" class="ui-btn-right" data-inline="true">搜索</a>
+    </div>
     <div data-role="navbar">
       <ul>
         <li><a href="#amazon" title="#amazon" data-transition="none" data-icon="star">亚马逊
@@ -99,15 +112,26 @@
       
     </div>
   </div>
-  <div data-role="footer"   class="ui-btn dangdang_footer">
-    <a href="#" data-role="button" data-icon="search" class="shop_search" id="dangdang">搜索</a>
-  </div>
+<!-- 面板 -->
+    <div data-role="panel" id="sortby" data-theme="b"> 
+      <div class="panel-content"> 
+        <h3> 排序方式</h3> 
+        <div data-role="controlgroup" data-type="vertical">
+        <a href="#" data-role="button" class="default">默认</a>
+        <a href="#" data-role="button" class="popular">按人气降序</a>
+        <a href="#" data-role="button" class="price">按价格升序</a>
+        </div>
+        <a href="#demo-links" style="margin-top:100%;width: 90%" data-rel="close" data-role="button" data-theme="a" data-icon="delete" data-inline="true"> 取消</a>
+      </div> 
+    </div> 
 </div>
 
 <!-- 京东页面 -->
 <div data-role="page" class="shoppage" id="jd">
   <div data-position="fixed" data-role="header" data-icon="home">
-    <input type="search" name="bookname" id="bookname_jd" placeholder="请输入关键字，可以是名称、作者">
+    <div class="searchbar">
+    <input type="search" name="bookname" id="bookname_jd" placeholder="请输入关键字，可以是名称、作者"><a class="shop_search" data-role="button" data-theme="b" class="ui-btn-right" data-inline="true">搜索</a>
+    </div>
     <div data-role="navbar">
       <ul>
         <li><a href="#amazon" title="#amazon" data-transition="none" data-icon="star">亚马逊
@@ -123,9 +147,18 @@
       
     </div>
   </div>
-  <div data-role="footer"   class="ui-btn jd_footer">
-    <a href="#" data-role="button" data-icon="search" class="shop_search" id="jd">搜索</a>
-  </div>
+<!-- 面板 -->
+    <div data-role="panel" id="sortby" data-theme="b"> 
+      <div class="panel-content"> 
+        <h3> 排序方式</h3> 
+        <div class="sorttype" data-role="controlgroup" data-type="vertical">
+        <a href="#" data-role="button" class="default">默认</a>
+        <a href="#" data-role="button" class="popular">按人气降序</a>
+        <a href="#" data-role="button" class="price">按价格升序</a>
+        </div>
+        <a href="#demo-links" style="margin-top:100%;width: 90%" data-rel="close" data-role="button" data-theme="a" data-icon="delete" data-inline="true"> 取消</a>
+      </div> 
+    </div> 
 </div>
 <!--收藏页面-->
 <div data-role="page" class="shoppage" id="collect">
@@ -159,12 +192,38 @@
     <div class="detail_author"><div class="detail_author_title">作者</div><div class="bookauthor"></div></div>
     <div class="detail_price"><div class="detail_price_title">价格</div><div class="bookprice"></div></div>
     <div class="detail_btn">
-      <a data-role="button" data-transition="slidedown" class="shop_btn"  data-theme="a">访问店铺</a>
-      <a data-role="button" data-transition="slidedown" class="return_btn" data-rel="back" >返回</a>
+      <a data-role="button" data-transition="slidedown" class="shop_btn"  data-theme="b">访问店铺</a>
+      <a data-role="button" id="comment" href="#usercomment" title="#collect" data-transition="none">评论</a>
+      <a class="returnback" data-role="button" data-transition="slidedown" class="return_btn">返回</a>
       
     </div>
   </div>
 </div>
+
+<!-- 评论页面 -->
+<div data-transition="none" data-role="page" id="usercomment">
+  <div data-role="header">
+    <div class="comment_bar">
+    <input type="text" name="comment_text" id="comment_text"><a class="comment_output ui-btn-right" data-role="button" data-theme="b" data-inline="true">发布</a>
+    </div>
+
+  </div>
+    <div data-role="content">
+      <p class="displaynone" style="text-align:center;color:#808080;margin-top:30%">目前尚无评论</p>
+      <div class="comment_content">
+        <div class="comment_ceil">
+        <h2>xxx说</h2>
+        <h3>天气真好</h3>
+        </div>
+        
+      </div>
+      <div class="detail_btn">
+      <a class="returnback" data-role="button" data-transition="slidedown" class="return_btn">返回</a>     
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- 警告页面 -->
 <div data-role="page" id="nobookname">
   <div data-role="header">
@@ -172,6 +231,15 @@
   </div>
   <div data-role="content">
     <p>请输入书名</p>
+  </div>
+</div>
+
+<div data-role="page" id="nocomment">
+  <div data-role="header">
+    <h1>提示</h1>
+  </div>
+  <div data-role="content">
+    <p>请输入评论</p>
   </div>
 </div>
 
